@@ -1,0 +1,36 @@
+version: "3.9"
+
+services:
+  mongo:
+    container_name: mongo
+    image: 'mongo:latest'
+    environment:
+      - MONGO_DATA_DIR=/var/lib/mongo
+      - MONGO_LOG_DIR=/dev/null
+    volumes:
+      - mongoData:/var/lib/mongo
+    ports:
+      - '27017:27017'
+    restart: unless-stopped
+
+  postgres:
+    container_name: postgres
+    image: 'postgres:latest'
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=main_db
+    volumes:
+      - postgresData:/var/lib/postgresql/data
+    ports:
+      - '5432:5432'
+    restart: unless-stopped
+
+  redis:
+    container_name: redis
+    image: 'redis:latest'
+    ports:
+      - '6379:6379'
+    volumes:
+      - redisData:/data
+    restart: unless-stopped
