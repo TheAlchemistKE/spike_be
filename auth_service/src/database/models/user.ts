@@ -1,4 +1,4 @@
-import {Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn} from "typeorm";
+import {Column, Entity, Index, JoinColumn, OneToOne, PrimaryGeneratedColumn} from "typeorm";
 import {Profile} from "./profile";
 
 
@@ -16,6 +16,7 @@ export class User {
     @Column()
     phone_number!: string;
 
+    @Index()
     @OneToOne(() => Profile)
     @JoinColumn()
     profile!: Profile;
