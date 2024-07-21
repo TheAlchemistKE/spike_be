@@ -35,6 +35,9 @@ interface LogConfig {
 }
 
 interface SecurityConfig {
+    refreshTokenExpiresIn: string;
+    jwtExpiresIn: string;
+    refreshTokenSecret: string;
     jwtSecret: string;
     bcryptRounds: number;
     rateLimitRequests: number;
@@ -94,6 +97,9 @@ function loadConfig(): Config {
             bcryptRounds: parseInt(process.env.BCRYPT_ROUNDS || '10', 10),
             rateLimitRequests: parseInt(process.env.RATE_LIMIT_REQUESTS || '100', 10),
             rateLimitWindowMs: parseInt(process.env.RATE_LIMIT_WINDOW_MS || '900000', 10),
+            refreshTokenSecret: process.env.JWT_REFRESH_TOKEN || 'your-secret',
+            jwtExpiresIn: process.env.JWT_EXPIRES_IN || '4h',
+            refreshTokenExpiresIn: process.env.JWT_REFRESH_TOKEN_EXPIRES_IN || '7d',
         },
         corsAllowedOrigins: process.env.CORS_ALLOWED_ORIGINS ? process.env.CORS_ALLOWED_ORIGINS.split(',') : ['http://localhost:3000'],
         maxRequestBodySize: process.env.MAX_REQUEST_BODY_SIZE || '1mb',
