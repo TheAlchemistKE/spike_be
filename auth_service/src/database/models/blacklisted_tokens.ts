@@ -1,16 +1,16 @@
-import {Column, Entity, PrimaryGeneratedColumn} from "typeorm";
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn } from "typeorm";
 
 @Entity('blacklisted_tokens')
-export class BlacklistedTokens {
+export class BlacklistedToken {
     @PrimaryGeneratedColumn('uuid')
     id!: string;
 
     @Column()
     token!: string;
 
-    @Column()
-    expired_at!: string;
+    @CreateDateColumn()
+    created_at!: Date;
 
     @Column()
-    user_id!: string;
+    expires_at!: Date;
 }
