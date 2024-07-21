@@ -1,8 +1,7 @@
 import "reflect-metadata"
 import {DataSource} from "typeorm";
 import {User} from "./models/user";
-import {BlacklistedTokens} from "./models/blacklisted_tokens";
-import {Profile} from "./models/profile";
+import {BlacklistedToken} from "./models/blacklisted_tokens";
 
 export const AppDataSource = new DataSource({
     type: "postgres",
@@ -11,7 +10,7 @@ export const AppDataSource = new DataSource({
     username: "postgres",
     password: "",
     database: "spike_userbase",
-    entities: [User, Profile, BlacklistedTokens],
+    entities: [User, BlacklistedToken],
     synchronize: true,
     logging: false,
     poolSize: 10,
