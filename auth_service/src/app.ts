@@ -7,10 +7,11 @@ import cookieParser from "cookie-parser"
 import { io as auth_emitter } from "socket.io-client";
 import "reflect-metadata"
 import http from "http";
-import auth from "./routes/auth";
+import cron from 'node-cron'
 import {AppDataSource} from "./database";
-import {requestLogger} from "./middleware/request_logger";
-import errorHandler from "./middleware/error_handler";
+import {logger} from "./config/logger";
+import router from "./routes";
+import {tokenService} from "./config/di";
 dotenv.config();
 
 
@@ -43,8 +44,18 @@ export default async (port: number) => {
     app.use(bodyParser.urlencoded({ extended: false }));
     app.use(cookieParser())
     app.use(helmet());
-    app.use(requestLogger)
-    app.use(errorHandler)
+
+    app.use('/api/v1', router)
+
+
+    cron.schedule('0 0 * * *', async () => {
+        try {
+            await tokenService.cleanupExpiredTokens()
+            logger.info('Blacklist cleanup job completed successfully.');
+        } catch (e: any) {
+            logger.error('Error in blacklist cleanup job: ', e)
+        }
+    })
 
 
 
