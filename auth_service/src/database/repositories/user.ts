@@ -1,62 +1,42 @@
-import {Repository} from "typeorm";
+import { Repository } from "typeorm";
 import {User} from "../models/user";
 import {AppDataSource} from "../index";
-import {IUser} from "../../interfaces/user";
 
-class UserRepository {
-    private static instance: UserRepository;
+export class UserRepository {
     private repo: Repository<User>;
 
     constructor() {
         this.repo = AppDataSource.getRepository(User);
     }
 
-    public static getInstance(): UserRepository {
-        if (!UserRepository.instance) {
-            UserRepository.instance = new UserRepository()
-        }
-        return UserRepository.instance
+    async create(user: Partial<User>): Promise<User> {
+        const newUser = this.repo.create(user);
+        return await this.repo.save(newUser);
     }
 
-    async create(user: IUser){
-        try {
-            return await this.repo.create(user);
-        } catch (e: any) {
-            console.error(e.message);
-        }
+    async findById(id: string): Promise<User | null> {
+        return await this.repo.findOne({ where: { id } });
     }
 
-    async find(email: string) {
-        try {
-            const user = await this.repo.findBy({
-                email,
-            })
-            if(!user) {
-                throw new Error("User not found");
-            }
-
-            return user;
-        } catch (e: any) {
-            console.error(e.message);
-        }
+    async findByEmail(email: string): Promise<User | null> {
+        return await this.repo.findOne({ where: { email } });
     }
 
-    async update(email: string, user: Partial<IUser>){
-        try {
-            return await this.repo.update({ email}, user)
-        } catch (e: any) {
-            console.error(e.message);
-        }
+    async update(id: string, userData: Partial<User>): Promise<User | null> {
+        await this.repo.update(id, userData);
+        return this.findById(id);
     }
 
-    async delete(email: string) {
-        try {
-           return await this.repo.delete({ email });
-        } catch (e: any) {
-            console.error(e.message);
-        }
+    async delete(id: string): Promise<boolean> {
+        const result = await this.repo.delete(id);
+        return result.affected !== 0;
+    }
+
+    async findAll(): Promise<User[]> {
+        return await this.repo.find();
+    }
+
+    async findByRefreshToken(refreshToken: string): Promise<User | null> {
+        return await this.repo.findOne({ where: { refresh_token: refreshToken } });
     }
 }
-
-const userRepo = UserRepository.getInstance()
-export default userRepo;
