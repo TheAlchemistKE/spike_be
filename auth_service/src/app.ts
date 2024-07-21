@@ -9,6 +9,8 @@ import "reflect-metadata"
 import http from "http";
 import auth from "./routes/auth";
 import {AppDataSource} from "./database";
+import {requestLogger} from "./middleware/request_logger";
+import errorHandler from "./middleware/error_handler";
 dotenv.config();
 
 
@@ -41,6 +43,8 @@ export default async (port: number) => {
     app.use(bodyParser.urlencoded({ extended: false }));
     app.use(cookieParser())
     app.use(helmet());
+    app.use(requestLogger)
+    app.use(errorHandler)
 
 
 
