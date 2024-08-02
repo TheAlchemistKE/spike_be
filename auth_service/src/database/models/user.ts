@@ -1,6 +1,13 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn } from "typeorm";
 import { IsEmail, IsPhoneNumber, MinLength } from "class-validator";
 
+export enum Role {
+    Admin="admin",
+    Owner="owner",
+    Customer="customer",
+    Rider="rider",
+}
+
 @Entity('users')
 export class User {
     @PrimaryGeneratedColumn('uuid')
@@ -25,8 +32,8 @@ export class User {
     @Column({ nullable: true })
     address?: string;
 
-    @Column({ default: 'user' })
-    role!: string;
+    @Column({ default: 'customer', enum: Role })
+    role!: Role;
 
     @Column({ default: false })
     is_verified!: boolean;
